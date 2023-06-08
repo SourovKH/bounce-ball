@@ -1,62 +1,38 @@
 class Ball {
-  #x;
-  #y;
-  #dx;
-  #dy;
-  #content;
-  #obstacles;
+  #position;
+  #velocity;
+  #shape;
 
-  constructor({ start, displacement, shape, bounds, obstacles }) {
-    this.#x = start.x;
-    this.#y = start.y;
-    this.#dx = displacement.x;
-    this.#dy = displacement.y;
-    this.#content = shape;
-    this.#obstacles = obstacles;
+  constructor(startingPosition, initVelocity, shape) {
+    this.#position = startingPosition;
+    this.#velocity = initVelocity;
+    this.#shape = shape;
   }
 
   show(stdout) {
-    stdout.cursorTo(this.#x, this.#y);
-    stdout.write(this.#content);
+    stdout.cursorTo(this.#position.x, this.#position.y);
+    stdout.write(this.#shape);
   }
 
   hide(stdout) {
-    stdout.cursorTo(this.#x, this.#y);
-    stdout.write(" ".repeat(this.#content.length));
+    stdout.cursorTo(this.#position.x, this.#position.y);
+    stdout.write(" ".repeat(this.#shape.length));
   }
 
-  push(dx, dy) {
-    this.#dx += dx;
-    this.#dy += dy;
-  }
-
-  #collidesOnX() {
-    return [
-      this.#obstacles.left.collides({x: this.#x, y: this.#y}), 
-      this.#obstacles.right.collides({x: this.#x, y: this.#y})
-    ].includes(true);
-  }
-
-  #collidesOnY() {
-    return [
-      this.#obstacles.upper.collides({x: this.#x, y: this.#y}), 
-      this.#obstacles.bottom.collides({x: this.#x, y: this.#y})
-    ].includes(true);
+  set velocity(newVelocity) {
+    this.#velocity = newVelocity;
   }
 
   move() {
-    this.#x += this.#dx;
-    this.#y += this.#dy;
+    this.#position.x += this.#velocity.x;
+    this.#position.y += this.#velocity.y;
+  }
 
-    if(this.#collidesOnX()) {
-      this.#x -= this.#dx;
-      this.#dx = 0 - this.#dx;
-    }
-    
-    if(this.#collidesOnY()) {
-      this.#y -= this.#dy;
-      this.#dy = 0 - this.#dy;
-    }
+  isColliding(obstacle) {
+    const upcomingX = this.#position.x + this.#velocity.x;
+    const upcomingY = this.#position.y + this.#velocity.y;
+
+    return obstacle.collides({x: upcomingX, y: upcomingY});
   }
 }
 
