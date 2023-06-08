@@ -1,5 +1,5 @@
-const { Ball } = require("./ball.js");
-const { Wall } = require("./wall.js");
+const { Ball } = require("./src/ball.js");
+const { Wall } = require("./src/wall.js");
 
 const showCursor = () => process.stdout.write('\u001B[?25h');
 const hideCursor = () => process.stdout.write('\u001B[?25l');
